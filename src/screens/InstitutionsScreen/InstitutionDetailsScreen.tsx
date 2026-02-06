@@ -9,6 +9,7 @@ import {
 import { Text, Surface, Button, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Institution } from './types/institution.types';
+import { StatCard } from '../../components/UI/StatCard';
 
 const { width } = Dimensions.get('window');
 
@@ -98,45 +99,37 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
 
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statHeader}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#E3F2FD' }]}>
-                <Icon name="camera-outline" size={24} color="#2196F3" />
-              </View>
-              <Text style={styles.statValue}>{institution.stats.cameras}</Text>
-            </View>
-            <Text style={styles.statLabel}>Всего камер</Text>
-          </Surface>
+          <StatCard
+            icon="camera-outline"
+            iconColor="#2196F3"
+            iconBackgroundColor="#E3F2FD"
+            value={institution.stats.cameras}
+            label="Всего камер"
+          />
 
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statHeader}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#E8F5E9' }]}>
-                <Icon name="account-group-outline" size={24} color="#4CAF50" />
-              </View>
-              <Text style={styles.statValue}>{institution.stats.users}</Text>
-            </View>
-            <Text style={styles.statLabel}>Пользователей</Text>
-          </Surface>
+          <StatCard
+            icon="account-group-outline"
+            iconColor="#4CAF50"
+            iconBackgroundColor="#E8F5E9"
+            value={institution.stats.users}
+            label="Пользователей"
+          />
 
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statHeader}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#FFF3E0' }]}>
-                <Icon name="alert-outline" size={24} color="#FF9800" />
-              </View>
-              <Text style={styles.statValue}>{institution.stats.incidents}</Text>
-            </View>
-            <Text style={styles.statLabel}>Инцидентов за месяц</Text>
-          </Surface>
+          <StatCard
+            icon="alert-outline"
+            iconColor="#FF9800"
+            iconBackgroundColor="#FFF3E0"
+            value={institution.stats.incidents}
+            label="Инцидентов за месяц"
+          />
 
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statHeader}>
-              <View style={[styles.statIconContainer, { backgroundColor: '#F3E5F5' }]}>
-                <Icon name="clock-outline" size={24} color="#9C27B0" />
-              </View>
-              <Text style={styles.statValue}>98%</Text>
-            </View>
-            <Text style={styles.statLabel}>Время работы</Text>
-          </Surface>
+          <StatCard
+            icon="clock-outline"
+            iconColor="#9C27B0"
+            iconBackgroundColor="#F3E5F5"
+            value="98%"
+            label="Время работы"
+          />
         </View>
 
         {/* Main Content */}
@@ -433,37 +426,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
     marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 24,
-    alignItems: 'flex-start',
-    minHeight: 140,
-  },
-  statHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  statIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#1B1B1B',
-  },
-  statLabel: {
-    fontSize: 13,
-    color: '#717182',
-    lineHeight: 18,
   },
   mainContent: {
     flexDirection: 'row',
