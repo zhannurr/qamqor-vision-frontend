@@ -21,7 +21,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   elevation = 1,
 }) => {
   return (
-    <Surface style={styles.statCard} elevation={elevation}>
+    <Surface style={styles.statCard}>
       <View style={styles.statHeader}>
         <View style={[styles.statIconContainer, { backgroundColor: iconBackgroundColor }]}>
           <MaterialCommunityIcons name={icon} size={24} color={iconColor} />

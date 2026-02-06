@@ -2,16 +2,11 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
-  Modal,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
 } from 'react-native';
-import { Text, TextInput, Surface } from 'react-native-paper';
+import { Text, TextInput } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { CustomButton } from '../../../components/UI/CustomButton';
-
-const { width } = Dimensions.get('window');
+import { Modal } from '../../../components/UI/Modal';
 
 interface AddInstitutionModalProps {
   visible: boolean;
@@ -63,35 +58,32 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
   return (
     <Modal
       visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={handleClose}
+      onDismiss={handleClose}
+      title="Добавить учреждение"
+      subtitle="Заполните информацию об учреждении"
+      icon="office-building-outline"
+      iconColor="#8B7A9E"
+      iconBackgroundColor="#E8E0F0"
+      dismissable={true}
+      showCloseButton={true}
+      maxContentHeight={500}
+      width={580}
+      actions={
+        <>
+          <CustomButton
+            label="Отменить"
+            onPress={handleClose}
+            variant="outline"
+          />
+          <CustomButton
+            label="Создать учреждение"
+            onPress={handleSubmit}
+            variant="primary"
+          />
+        </>
+      }
     >
-      <View style={styles.overlay}>
-        <Surface style={styles.modalContainer} elevation={5}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <View style={styles.iconContainer}>
-                <Icon name="office-building-outline" size={24} color="#8B7A9E" />
-              </View>
-              <View>
-                <Text style={styles.title}>Добавить учреждение</Text>
-                <Text style={styles.subtitle}>
-                  Заполните информацию об учреждении
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <Icon name="close" size={24} color="#717182" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            style={styles.content}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Form Fields */}
+      {/* Form Fields */}
             <View style={styles.formGroup}>
               <Text style={styles.label}>Название учреждения</Text>
               <TextInput
@@ -181,90 +173,18 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               </Text>
             </View>
 
-            {/* Info Note */}
-            <View style={styles.noteContainer}>
-              <Icon name="information-outline" size={20} color="#2196F3" />
-              <Text style={styles.noteText}>
-                Примечание: добавив учреждение вы сможете добавить камеры,
-                назначить пользователей и настроить модули видеомониторинга.
-              </Text>
-            </View>
-          </ScrollView>
-
-          {/* Footer */}
-          <View style={styles.footer}>
-            <CustomButton
-              label="Отменить"
-              onPress={handleClose}
-              variant="outline"
-            />
-            <CustomButton
-              label="Создать учреждение"
-              onPress={handleSubmit}
-              variant="primary"
-            />
-          </View>
-        </Surface>
+      {/* Info Note */}
+      <View style={styles.noteContainer}>
+        <Icon name="information-outline" size={20} color="#2196F3" />
+        <Text style={styles.noteText}>
+          Примечание: добавив учреждение вы сможете добавить камеры,
+          назначить пользователей и настроить модули видеомониторинга.
+        </Text>
       </View>
     </Modal>
   );
 };
-
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContainer: {
-    width: width > 600 ? 580 : width - 40,
-    maxHeight: '90%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: 24,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    backgroundColor: '#E8E0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1B1B1B',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#717182',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  content: {
-    padding: 24,
-    maxHeight: 500,
-  },
   formGroup: {
     marginBottom: 24,
   },
@@ -305,14 +225,5 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     marginLeft: 12,
     lineHeight: 18,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 24,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#F5F5F5',
-    gap: 12,
   },
 });
