@@ -4,38 +4,34 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  Animated,
 } from 'react-native';
-import { Text, Button, Surface } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { InstitutionCard } from './components/InstitutionCard';
-import { InstitutionDetails } from './components/InstitutionDetails';
 import { useInstitutions } from './hooks/useInstitutions';
 
 const { width } = Dimensions.get('window');
 
-const InstitutionsScreen: React.FC = () => {
-  const {
-    institutions,
-    selectedInstitution,
-    isDetailsVisible,
-    handleSelectInstitution,
-    handleCloseDetails,
-  } = useInstitutions();
+interface InstitutionsScreenProps {
+  navigation: any;
+}
+
+const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) => {
+  const { institutions } = useInstitutions();
 
   const handleAddInstitution = () => {
     console.log('Add new institution');
     // Здесь будет логика добавления нового учреждения
   };
 
+  const handleSelectInstitution = (institution: any) => {
+    navigation.navigate('InstitutionDetails', { institution });
+  };
+
   return (
     <View style={styles.container}>
-      {/* Main Content */}
       <ScrollView
-        style={[
-          styles.scrollView,
-          isDetailsVisible && styles.scrollViewWithPanel,
-        ]}
+        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -62,13 +58,7 @@ const InstitutionsScreen: React.FC = () => {
         {/* Institutions Grid */}
         <View style={styles.grid}>
           {institutions.map((institution) => (
-            <View
-              key={institution.id}
-              style={[
-                styles.gridItem,
-                isDetailsVisible && styles.gridItemNarrow,
-              ]}
-            >
+            <View key={institution.id} style={styles.gridItem}>
               <InstitutionCard
                 institution={institution}
                 onPress={() => handleSelectInstitution(institution)}
@@ -77,16 +67,6 @@ const InstitutionsScreen: React.FC = () => {
           ))}
         </View>
       </ScrollView>
-
-      {/* Details Panel */}
-      {isDetailsVisible && selectedInstitution && (
-        <Animated.View style={styles.detailsPanel}>
-          <InstitutionDetails
-            institution={selectedInstitution}
-            onClose={handleCloseDetails}
-          />
-        </Animated.View>
-      )}
     </View>
   );
 };
@@ -95,12 +75,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#CBBBD8',
-    flexDirection: 'row',
   },
   scrollView: {
-    flex: 1,
-  },
-  scrollViewWithPanel: {
     flex: 1,
   },
   scrollContent: {
@@ -144,21 +120,6 @@ const styles = StyleSheet.create({
   gridItem: {
     width: width > 1200 ? '33.33%' : width > 800 ? '50%' : '100%',
     paddingHorizontal: 8,
-  },
-  gridItemNarrow: {
-    width: width > 1400 ? '33.33%' : '50%',
-  },
-  detailsPanel: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: -2, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
   },
 });
 

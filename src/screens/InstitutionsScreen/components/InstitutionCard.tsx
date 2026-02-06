@@ -16,9 +16,6 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
   return (
     <Surface style={styles.card} elevation={1}>
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Icon name="office-building-outline" size={32} color="#8B7A9E" />
-        </View>
         <Chip
           mode="flat"
           style={[

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CustomDrawer from '../components/CustomDrawer';
 
 // Screens
@@ -11,7 +12,14 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
 import UsersScreen from '../screens/UsersScreen';
 import InstitutionsScreen from '../screens/InstitutionsScreen';
+import InstitutionDetailsScreen from '../screens/InstitutionsScreen/InstitutionDetailsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import { Institution } from '../screens/InstitutionsScreen/types/institution.types';
+
+export type InstitutionsStackParamList = {
+  InstitutionsList: undefined;
+  InstitutionDetails: { institution: Institution };
+};
 
 export type DrawerParamList = {
   Dashboard: undefined;
@@ -21,11 +29,31 @@ export type DrawerParamList = {
   Notifications: undefined;
   Analytics: undefined;
   Users: undefined;
-  Institutions: undefined;
+  InstitutionsStack: undefined;
   Settings: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
+const InstitutionsStack = createNativeStackNavigator<InstitutionsStackParamList>();
+
+const InstitutionsNavigator: React.FC = () => {
+  return (
+    <InstitutionsStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <InstitutionsStack.Screen
+        name="InstitutionsList"
+        component={InstitutionsScreen}
+      />
+      <InstitutionsStack.Screen
+        name="InstitutionDetails"
+        component={InstitutionDetailsScreen}
+      />
+    </InstitutionsStack.Navigator>
+  );
+};
 
 const DrawerNavigator: React.FC = () => {
   return (
@@ -88,8 +116,8 @@ const DrawerNavigator: React.FC = () => {
         options={{ title: 'Пользователи' }}
       />
       <Drawer.Screen
-        name="Institutions"
-        component={InstitutionsScreen}
+        name="InstitutionsStack"
+        component={InstitutionsNavigator}
         options={{ title: 'Учреждения' }}
       />
       <Drawer.Screen

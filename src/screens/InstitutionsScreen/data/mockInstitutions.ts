@@ -91,22 +91,5 @@ export const mockInstitutions: Institution[] = [
       perimeterMonitoring: true,
     },
   },
-  {
-    id: '6',
-    name: 'Производственный цех',
-    address: 'ул. Толе би, 59, Алматы',
-    manager: 'Новикова Е.В.',
-    isActive: true,
-    stats: {
-      cameras: 28,
-      users: 10,
-      incidents: 6,
-    },
-    activeModules: {
-      smokDetection: true,
-      fireDetection: true,
-      accessControl: true,
-      perimeterMonitoring: true,
-    },
-  },
+
 ];

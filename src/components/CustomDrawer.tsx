@@ -116,8 +116,8 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
           <DrawerItem
             label="Учреждения"
             icon="office-building-outline"
-            onPress={() => navigation.navigate('Institutions')}
-            isActive={currentRoute === 'Institutions'}
+            onPress={() => navigation.navigate('InstitutionsStack')}
+            isActive={currentRoute === 'InstitutionsStack'}
           />
           <DrawerItem
             label="Настройки"
