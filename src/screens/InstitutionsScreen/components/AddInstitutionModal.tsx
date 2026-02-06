@@ -7,8 +7,9 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { Text, TextInput, Button, Surface } from 'react-native-paper';
+import { Text, TextInput, Surface } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { CustomButton } from '../../../components/UI/CustomButton';
 
 const { width } = Dimensions.get('window');
 
@@ -192,24 +193,16 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Button
-              mode="outlined"
+            <CustomButton
+              label="Отменить"
               onPress={handleClose}
-              style={styles.cancelButton}
-              contentStyle={styles.buttonContent}
-              labelStyle={styles.cancelButtonLabel}
-            >
-              Отменить
-            </Button>
-            <Button
-              mode="contained"
+              variant="outline"
+            />
+            <CustomButton
+              label="Создать учреждение"
               onPress={handleSubmit}
-              style={styles.submitButton}
-              contentStyle={styles.buttonContent}
-              labelStyle={styles.submitButtonLabel}
-            >
-              Создать учреждение
-            </Button>
+              variant="primary"
+            />
           </View>
         </Surface>
       </View>
@@ -321,28 +314,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F5F5F5',
     gap: 12,
-  },
-  cancelButton: {
-    borderRadius: 16,
-    borderColor: '#E0E0E0',
-    borderWidth: 1.5,
-  },
-  submitButton: {
-    backgroundColor: '#A89AB8',
-    borderRadius: 16,
-  },
-  buttonContent: {
-    height: 48,
-    paddingHorizontal: 20,
-  },
-  cancelButtonLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#717182',
-  },
-  submitButtonLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 });

@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import { Text, Surface, Button, Chip } from 'react-native-paper';
+import { Text, Surface, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Institution } from './types/institution.types';
 import { StatCard } from '../../components/UI/StatCard';
+import { CustomButton } from '../../components/UI/CustomButton';
 
 const { width } = Dimensions.get('window');
 
@@ -56,26 +57,20 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
           </TouchableOpacity>
 
           <View style={styles.headerActions}>
-            <Button
-              mode="outlined"
+            <CustomButton
+              label="Карта объекта"
               onPress={handleViewMap}
-              style={styles.mapButton}
-              contentStyle={styles.mapButtonContent}
-              labelStyle={styles.mapButtonLabel}
-              icon={() => <Icon name="map-marker-outline" size={18} color="#A89AB8" />}
-            >
-              Карта объекта
-            </Button>
-            <Button
-              mode="contained"
+              variant="outline"
+              size="small"
+              icon="map-marker-outline"
+            />
+            <CustomButton
+              label="Редактировать"
               onPress={handleEdit}
-              style={styles.editButton}
-              contentStyle={styles.editButtonContent}
-              labelStyle={styles.editButtonLabel}
-              icon={() => <Icon name="pencil-outline" size={18} color="#FFFFFF" />}
-            >
-              Редактировать
-            </Button>
+              variant="primary"
+              size="small"
+              icon="pencil-outline"
+            />
           </View>
         </View>
 
@@ -361,34 +356,6 @@ const styles = StyleSheet.create({
   headerActions: {
     flexDirection: 'row',
     gap: 12,
-  },
-  mapButton: {
-    borderRadius: 16,
-    borderColor: '#A89AB8',
-    borderWidth: 1.5,
-    backgroundColor: '#FFFFFF',
-  },
-  mapButtonContent: {
-    height: 40,
-    paddingHorizontal: 12,
-  },
-  mapButtonLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#A89AB8',
-  },
-  editButton: {
-    backgroundColor: '#A89AB8',
-    borderRadius: 16,
-  },
-  editButtonContent: {
-    height: 40,
-    paddingHorizontal: 12,
-  },
-  editButtonLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
   titleSection: {
     marginBottom: 24,

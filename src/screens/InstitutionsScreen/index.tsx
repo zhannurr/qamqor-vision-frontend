@@ -5,11 +5,12 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { Text } from 'react-native-paper';
 import { InstitutionCard } from './components/InstitutionCard';
 import { AddInstitutionModal, InstitutionFormData } from './components/AddInstitutionModal';
 import { useInstitutions } from './hooks/useInstitutions';
+import { CustomButton } from '../../components/UI/CustomButton';
+import { green } from 'react-native-reanimated/lib/typescript/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -54,16 +55,12 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
               Обзор и управление всеми учреждениями
             </Text>
           </View>
-          <Button
-            mode="contained"
+          <CustomButton
+            label="Добавить учреждение"
             onPress={handleAddInstitution}
-            style={styles.addButton}
-            contentStyle={styles.addButtonContent}
-            labelStyle={styles.addButtonLabel}
-            icon={() => <Icon name="plus" size={20} color="#FFFFFF" />}
-          >
-            Добавить учреждение
-          </Button>
+            variant="primary"
+            icon="plus"
+          />
         </View>
 
         {/* Institutions Grid */}
@@ -119,16 +116,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: '#A89AB8',
-    borderRadius: 12,
+    borderRadius: 16,
     alignSelf: 'flex-start',
-  },
-  addButtonContent: {
-    height: 48,
-    paddingHorizontal: 8,
-  },
-  addButtonLabel: {
-    fontSize: 15,
-    fontWeight: '600',
   },
   grid: {
     flexDirection: 'row',
