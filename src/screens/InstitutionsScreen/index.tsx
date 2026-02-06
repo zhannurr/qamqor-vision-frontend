@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
 import { Text, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { InstitutionCard } from './components/InstitutionCard';
+import { AddInstitutionModal, InstitutionFormData } from './components/AddInstitutionModal';
 import { useInstitutions } from './hooks/useInstitutions';
 
 const { width } = Dimensions.get('window');
@@ -18,10 +19,20 @@ interface InstitutionsScreenProps {
 
 const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) => {
   const { institutions } = useInstitutions();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleAddInstitution = () => {
-    console.log('Add new institution');
-    // Здесь будет логика добавления нового учреждения
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleSubmitInstitution = (data: InstitutionFormData) => {
+    console.log('New institution data:', data);
+    // Здесь будет логика добавления нового учреждения в базу данных
+    setIsModalVisible(false);
   };
 
   const handleSelectInstitution = (institution: any) => {
@@ -67,6 +78,13 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
           ))}
         </View>
       </ScrollView>
+
+      {/* Add Institution Modal */}
+      <AddInstitutionModal
+        visible={isModalVisible}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitInstitution}
+      />
     </View>
   );
 };
