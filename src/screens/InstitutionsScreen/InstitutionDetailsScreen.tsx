@@ -99,34 +99,42 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
           <Surface style={styles.statCard} elevation={1}>
-            <View style={[styles.statIconContainer, { backgroundColor: '#E3F2FD' }]}>
-              <Icon name="camera-outline" size={24} color="#2196F3" />
+            <View style={styles.statHeader}>
+              <View style={[styles.statIconContainer, { backgroundColor: '#E3F2FD' }]}>
+                <Icon name="camera-outline" size={24} color="#2196F3" />
+              </View>
+              <Text style={styles.statValue}>{institution.stats.cameras}</Text>
             </View>
-            <Text style={styles.statValue}>{institution.stats.cameras}</Text>
             <Text style={styles.statLabel}>Всего камер</Text>
           </Surface>
 
           <Surface style={styles.statCard} elevation={1}>
-            <View style={[styles.statIconContainer, { backgroundColor: '#E8F5E9' }]}>
-              <Icon name="account-group-outline" size={24} color="#4CAF50" />
+            <View style={styles.statHeader}>
+              <View style={[styles.statIconContainer, { backgroundColor: '#E8F5E9' }]}>
+                <Icon name="account-group-outline" size={24} color="#4CAF50" />
+              </View>
+              <Text style={styles.statValue}>{institution.stats.users}</Text>
             </View>
-            <Text style={styles.statValue}>{institution.stats.users}</Text>
             <Text style={styles.statLabel}>Пользователей</Text>
           </Surface>
 
           <Surface style={styles.statCard} elevation={1}>
-            <View style={[styles.statIconContainer, { backgroundColor: '#FFF3E0' }]}>
-              <Icon name="alert-outline" size={24} color="#FF9800" />
+            <View style={styles.statHeader}>
+              <View style={[styles.statIconContainer, { backgroundColor: '#FFF3E0' }]}>
+                <Icon name="alert-outline" size={24} color="#FF9800" />
+              </View>
+              <Text style={styles.statValue}>{institution.stats.incidents}</Text>
             </View>
-            <Text style={styles.statValue}>{institution.stats.incidents}</Text>
             <Text style={styles.statLabel}>Инцидентов за месяц</Text>
           </Surface>
 
           <Surface style={styles.statCard} elevation={1}>
-            <View style={[styles.statIconContainer, { backgroundColor: '#F3E5F5' }]}>
-              <Icon name="clock-outline" size={24} color="#9C27B0" />
+            <View style={styles.statHeader}>
+              <View style={[styles.statIconContainer, { backgroundColor: '#F3E5F5' }]}>
+                <Icon name="clock-outline" size={24} color="#9C27B0" />
+              </View>
+              <Text style={styles.statValue}>98%</Text>
             </View>
-            <Text style={styles.statValue}>98%</Text>
             <Text style={styles.statLabel}>Время работы</Text>
           </Surface>
         </View>
@@ -429,28 +437,33 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'flex-start',
+    minHeight: 140,
+  },
+  statHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 16,
   },
   statIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginRight: 16,
   },
   statValue: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '700',
     color: '#1B1B1B',
-    marginBottom: 4,
   },
   statLabel: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#717182',
-    textAlign: 'center',
+    lineHeight: 18,
   },
   mainContent: {
     flexDirection: 'row',
@@ -466,14 +479,15 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 24,
+    borderRadius: 20,
+    padding: 28,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1B1B1B',
-    marginBottom: 20,
+    marginBottom: 24,
+    letterSpacing: -0.5,
   },
   infoItem: {
     marginBottom: 16,
@@ -495,32 +509,34 @@ const styles = StyleSheet.create({
   modulesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 16,
   },
   moduleCard: {
     width: '48%',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: '#FAFAFA',
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: '#F0F0F0',
   },
   moduleCardActive: {
     backgroundColor: '#E8F5E9',
-    borderColor: '#4CAF50',
+    borderColor: '#81C784',
   },
   moduleIcon: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   moduleTitle: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
     color: '#1B1B1B',
-    marginBottom: 4,
+    marginBottom: 6,
+    lineHeight: 20,
   },
   moduleStatus: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#717182',
+    fontWeight: '500',
   },
   incidentItem: {
     flexDirection: 'row',
@@ -559,28 +575,29 @@ const styles = StyleSheet.create({
   },
   sidebarSection: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 20,
+    padding: 24,
   },
   sidebarTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: '#1B1B1B',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    marginBottom: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+    marginBottom: 10,
   },
   actionButtonText: {
     fontSize: 14,
     color: '#1B1B1B',
-    marginLeft: 12,
+    marginLeft: 14,
+    fontWeight: '500',
   },
   contactItem: {
     marginBottom: 16,
