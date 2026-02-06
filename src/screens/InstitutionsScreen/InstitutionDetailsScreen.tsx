@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: 16,
   },
   backButtonText: {
     fontSize: 14,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   mapButton: {
-    borderRadius: 8,
+    borderRadius: 16,
     borderColor: '#A89AB8',
     borderWidth: 1.5,
     backgroundColor: '#FFFFFF',
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     backgroundColor: '#A89AB8',
-    borderRadius: 8,
+    borderRadius: 16,
   },
   editButtonContent: {
     height: 40,
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 28,
   },
   sectionTitle: {
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   incidentDot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
+    borderRadius: 16,
     marginRight: 12,
   },
   incidentContent: {
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   },
   sidebarSection: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 24,
   },
   sidebarTitle: {
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 18,
     backgroundColor: '#F8F8F8',
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 10,
   },
   actionButtonText: {
