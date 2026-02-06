@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 48,
     height: 48,
-    borderRadius: 12,
+    borderRadius: 16,
     backgroundColor: '#E8E0F0',
     justifyContent: 'center',
     alignItems: 'center',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#E3F2FD',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     marginTop: 8,
   },
   noteText: {
@@ -323,13 +323,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cancelButton: {
-    borderRadius: 12,
+    borderRadius: 16,
     borderColor: '#E0E0E0',
     borderWidth: 1.5,
   },
   submitButton: {
     backgroundColor: '#A89AB8',
-    borderRadius: 12,
+    borderRadius: 16,
   },
   buttonContent: {
     height: 48,

@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 56,
     height: 56,
-    borderRadius: 14,
+    borderRadius: 16,
     backgroundColor: '#E8E0F0',
     justifyContent: 'center',
     alignItems: 'center',
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     backgroundColor: '#A89AB8',
-    borderRadius: 12,
+    borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
     alignItems: 'center',
