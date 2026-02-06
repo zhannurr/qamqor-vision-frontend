@@ -6,7 +6,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { InstitutionCard } from './components/InstitutionCard';
 import { AddInstitutionModal, InstitutionFormData } from './components/AddInstitutionModal';
 import { useInstitutions } from './hooks/useInstitutions';

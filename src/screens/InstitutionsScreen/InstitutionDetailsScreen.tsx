@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text, Surface, Button, Chip } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Institution } from './types/institution.types';
 
 const { width } = Dimensions.get('window');
