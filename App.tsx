@@ -7,8 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { theme } from "./src/theme";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
-import LoginForm from "./src/screens/LoginForm";
-import RegisterForm from "./src/screens/RegisterForm";
+import { LoginScreen, RegisterScreen } from "./src/screens/AuthScreen";
 import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
 
 const AppNavigator: React.FC = () => {
@@ -27,9 +26,9 @@ const AppNavigator: React.FC = () => {
     return (
       <>
         {showRegister ? (
-          <RegisterForm onNavigateToLogin={() => setShowRegister(false)} />
+          <RegisterScreen onNavigateToLogin={() => setShowRegister(false)} />
         ) : (
-          <LoginForm onNavigateToRegister={() => setShowRegister(true)} />
+          <LoginScreen onNavigateToRegister={() => setShowRegister(true)} />
         )}
       </>
     );
