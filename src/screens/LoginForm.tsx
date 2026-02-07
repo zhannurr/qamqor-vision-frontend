@@ -8,6 +8,7 @@ import {
   Dimensions,
   StatusBar,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import { Text, TextInput, Button, Card, Surface, useTheme, HelperText } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -16,7 +17,11 @@ import { useLoginForm } from '../hooks/useLoginForm';
 
 const { height, width } = Dimensions.get('window');
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  onNavigateToRegister?: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onNavigateToRegister }) => {
   const theme = useTheme();
   const {
     formData,
@@ -124,9 +129,9 @@ const LoginForm: React.FC = () => {
                 </Button>
                 <View style={styles.signupRow}>
                   <Text style={styles.signupText}>Нет аккаунта? </Text>
-                  <Button mode="text" compact labelStyle={styles.linkText}>
-                    Зарегистрироваться
-                  </Button>
+                  <TouchableOpacity onPress={onNavigateToRegister} disabled={isSubmitting}>
+                    <Text style={styles.registerLink}>Зарегистрироваться</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -242,10 +247,17 @@ const styles = StyleSheet.create({
   signupRow: {
     flexDirection: 'row',
     marginTop: 8,
+    alignItems: 'center',
   },
   signupText: {
     fontSize: 14,
     color: '#1B1B1B',
+  },
+  registerLink: {
+    fontSize: 14,
+    color: '#A89AB8',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });
 

@@ -5,10 +5,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Linking,
 } from 'react-native';
 import { Text, Surface, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { Institution } from './types/institution.types';
+import { Institution, ActiveModules } from './types/institution.types';
 import { StatCard } from '../../components/UI/StatCard';
 import { CustomButton } from '../../components/UI/CustomButton';
 
@@ -29,14 +30,37 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
 }) => {
   const { institution } = route.params;
 
+  // Parse active modules from JSON string
+  let activeModules: ActiveModules = {
+    smokDetection: false,
+    fireDetection: false,
+    accessControl: false,
+    perimeterMonitoring: false,
+  };
+  
+  try {
+    if (institution.active_modules) {
+      activeModules = JSON.parse(institution.active_modules);
+    }
+  } catch (error) {
+    console.error('Error parsing active modules:', error);
+  }
+
   const handleEdit = () => {
-    console.log('Edit institution:', institution.id);
+    console.log('Edit institution:', institution.organization_id);
     // Здесь будет логика редактирования
   };
 
-  const handleViewMap = () => {
-    console.log('View map for institution:', institution.id);
-    // Здесь будет логика просмотра карты
+  const handleViewMap = async () => {
+    if (institution.map_url) {
+      try {
+        await Linking.openURL(institution.map_url);
+      } catch (error) {
+        console.error('Error opening map:', error);
+      }
+    } else {
+      console.log('No map URL available for institution:', institution.organization_id);
+    }
   };
 
   return (
@@ -80,10 +104,13 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
             <Text style={styles.title}>{institution.name}</Text>
             <Chip
               mode="flat"
-              style={styles.statusChip}
+              style={[
+                styles.statusChip,
+                institution.is_active && styles.statusChipActive,
+              ]}
               textStyle={styles.statusChipText}
             >
-              Активно
+              {institution.is_active ? 'Активно' : 'Неактивно'}
             </Chip>
           </View>
           <View style={styles.addressRow}>
@@ -95,35 +122,35 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
         {/* Stats Cards */}
         <View style={styles.statsGrid}>
           <StatCard
-            icon="camera-outline"
+            icon="information-outline"
             iconColor="#2196F3"
             iconBackgroundColor="#E3F2FD"
-            value={institution.stats.cameras}
-            label="Всего камер"
+            value={institution.is_active ? 'Активно' : 'Неактивно'}
+            label="Статус учреждения"
           />
 
           <StatCard
-            icon="account-group-outline"
+            icon="calendar-outline"
             iconColor="#4CAF50"
             iconBackgroundColor="#E8F5E9"
-            value={institution.stats.users}
-            label="Пользователей"
-          />
-
-          <StatCard
-            icon="alert-outline"
-            iconColor="#FF9800"
-            iconBackgroundColor="#FFF3E0"
-            value={institution.stats.incidents}
-            label="Инцидентов за месяц"
+            value={new Date(institution.created_at).toLocaleDateString('ru-RU')}
+            label="Дата создания"
           />
 
           <StatCard
             icon="clock-outline"
+            iconColor="#FF9800"
+            iconBackgroundColor="#FFF3E0"
+            value={new Date(institution.updated_at).toLocaleDateString('ru-RU')}
+            label="Последнее обновление"
+          />
+
+          <StatCard
+            icon="puzzle-outline"
             iconColor="#9C27B0"
             iconBackgroundColor="#F3E5F5"
-            value="98%"
-            label="Время работы"
+            value={Object.values(activeModules).filter(Boolean).length.toString()}
+            label="Активных модулей"
           />
         </View>
 
@@ -137,18 +164,20 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Описание</Text>
                 <Text style={styles.infoValue}>
-                  Центральный офис компании с административными помещениями
+                  {institution.description || 'Описание не указано'}
                 </Text>
               </View>
 
               <View style={styles.infoItem}>
-                <Text style={styles.infoLabel}>Руководитель</Text>
-                <Text style={styles.infoValue}>{institution.manager}</Text>
+                <Text style={styles.infoLabel}>ID учреждения</Text>
+                <Text style={styles.infoValue}>{institution.organization_id}</Text>
               </View>
 
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Статус</Text>
-                <Text style={[styles.infoValue, styles.activeStatus]}>Активно</Text>
+                <Text style={[styles.infoValue, institution.is_active && styles.activeStatus]}>
+                  {institution.is_active ? 'Активно' : 'Неактивно'}
+                </Text>
               </View>
             </Surface>
 
@@ -160,60 +189,60 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
                 <View
                   style={[
                     styles.moduleCard,
-                    institution.activeModules.smokDetection && styles.moduleCardActive,
+                    activeModules.smokDetection && styles.moduleCardActive,
                   ]}
                 >
                   <View style={styles.moduleIcon}>
-                    <Icon name="smoke" size={24} color="#4CAF50" />
+                    <Icon name="smoke" size={24} color={activeModules.smokDetection ? "#4CAF50" : "#717182"} />
                   </View>
                   <Text style={styles.moduleTitle}>Детекция дыма</Text>
                   <Text style={styles.moduleStatus}>
-                    {institution.activeModules.smokDetection ? 'Активен' : 'Неактивен'}
+                    {activeModules.smokDetection ? 'Активен' : 'Неактивен'}
                   </Text>
                 </View>
 
                 <View
                   style={[
                     styles.moduleCard,
-                    institution.activeModules.fireDetection && styles.moduleCardActive,
+                    activeModules.fireDetection && styles.moduleCardActive,
                   ]}
                 >
                   <View style={styles.moduleIcon}>
-                    <Icon name="fire" size={24} color="#4CAF50" />
+                    <Icon name="fire" size={24} color={activeModules.fireDetection ? "#4CAF50" : "#717182"} />
                   </View>
                   <Text style={styles.moduleTitle}>Детекция огня</Text>
                   <Text style={styles.moduleStatus}>
-                    {institution.activeModules.fireDetection ? 'Активен' : 'Неактивен'}
+                    {activeModules.fireDetection ? 'Активен' : 'Неактивен'}
                   </Text>
                 </View>
 
                 <View
                   style={[
                     styles.moduleCard,
-                    institution.activeModules.accessControl && styles.moduleCardActive,
+                    activeModules.accessControl && styles.moduleCardActive,
                   ]}
                 >
                   <View style={styles.moduleIcon}>
-                    <Icon name="shield-check-outline" size={24} color="#4CAF50" />
+                    <Icon name="shield-check-outline" size={24} color={activeModules.accessControl ? "#4CAF50" : "#717182"} />
                   </View>
                   <Text style={styles.moduleTitle}>Контроль доступа</Text>
                   <Text style={styles.moduleStatus}>
-                    {institution.activeModules.accessControl ? 'Активен' : 'Неактивен'}
+                    {activeModules.accessControl ? 'Активен' : 'Неактивен'}
                   </Text>
                 </View>
 
                 <View
                   style={[
                     styles.moduleCard,
-                    institution.activeModules.perimeterMonitoring && styles.moduleCardActive,
+                    activeModules.perimeterMonitoring && styles.moduleCardActive,
                   ]}
                 >
                   <View style={styles.moduleIcon}>
-                    <Icon name="eye-circle-outline" size={24} color="#4CAF50" />
+                    <Icon name="eye-circle-outline" size={24} color={activeModules.perimeterMonitoring ? "#4CAF50" : "#717182"} />
                   </View>
                   <Text style={styles.moduleTitle}>Мониторинг периметра</Text>
                   <Text style={styles.moduleStatus}>
-                    {institution.activeModules.perimeterMonitoring ? 'Активен' : 'Неактивен'}
+                    {activeModules.perimeterMonitoring ? 'Активен' : 'Неактивен'}
                   </Text>
                 </View>
               </View>
@@ -302,18 +331,40 @@ const InstitutionDetailsScreen: React.FC<InstitutionDetailsScreenProps> = ({
               <Text style={styles.sidebarTitle}>Контактная информация</Text>
               
               <View style={styles.contactItem}>
-                <Text style={styles.contactLabel}>Руководитель</Text>
-                <Text style={styles.contactValue}>{institution.manager}</Text>
-              </View>
-
-              <View style={styles.contactItem}>
                 <Text style={styles.contactLabel}>Адрес</Text>
                 <Text style={styles.contactValue}>{institution.address}</Text>
               </View>
 
+              {institution.map_url && (
+                <TouchableOpacity 
+                  style={styles.contactItem}
+                  onPress={handleViewMap}
+                >
+                  <Text style={styles.contactLabel}>Карта</Text>
+                  <Text style={[styles.contactValue, styles.linkText]}>Открыть на карте</Text>
+                </TouchableOpacity>
+              )}
+              
               <View style={styles.contactItem}>
-                <Text style={styles.contactLabel}>Телефон</Text>
-                <Text style={styles.contactValue}>+7 (727) 123-45-67</Text>
+                <Text style={styles.contactLabel}>Создано</Text>
+                <Text style={styles.contactValue}>
+                  {new Date(institution.created_at).toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </Text>
+              </View>
+
+              <View style={styles.contactItem}>
+                <Text style={styles.contactLabel}>Обновлено</Text>
+                <Text style={styles.contactValue}>
+                  {new Date(institution.updated_at).toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </Text>
               </View>
             </Surface>
           </View>
@@ -540,6 +591,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1B1B1B',
     fontWeight: '500',
+  },
+  linkText: {
+    color: '#2196F3',
+    textDecorationLine: 'underline',
+  },
+  statusChipActive: {
+    backgroundColor: '#D4F4DD',
   },
 });
 

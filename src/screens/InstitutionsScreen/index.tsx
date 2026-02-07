@@ -19,7 +19,7 @@ interface InstitutionsScreenProps {
 }
 
 const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) => {
-  const { institutions } = useInstitutions();
+  const { institutions, loading, error, createInstitution } = useInstitutions();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleAddInstitution = () => {
@@ -30,10 +30,12 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
     setIsModalVisible(false);
   };
 
-  const handleSubmitInstitution = (data: InstitutionFormData) => {
+  const handleSubmitInstitution = async (data: InstitutionFormData) => {
     console.log('New institution data:', data);
-    // Здесь будет логика добавления нового учреждения в базу данных
-    setIsModalVisible(false);
+    const result = await createInstitution(data);
+    if (result) {
+      setIsModalVisible(false);
+    }
   };
 
   const handleSelectInstitution = (institution: any) => {
@@ -66,7 +68,7 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
         {/* Institutions Grid */}
         <View style={styles.grid}>
           {institutions.map((institution) => (
-            <View key={institution.id} style={styles.gridItem}>
+            <View key={institution.organization_id} style={styles.gridItem}>
               <InstitutionCard
                 institution={institution}
                 onPress={() => handleSelectInstitution(institution)}

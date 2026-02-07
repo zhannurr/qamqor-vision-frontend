@@ -83,3 +83,49 @@ export const login = async (
     };
   }
 };
+
+export interface IRegisterRequest {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  phone_number?: string;
+  push_notification_permission: boolean;
+  role?: string;
+}
+
+export interface IRegisterResponse {
+  message: string;
+}
+
+export const register = async (
+  data: IRegisterRequest
+): Promise<IApiResponse<IRegisterResponse>> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    return await handleResponse<IRegisterResponse>(response);
+  } catch (error) {
+    let errorMessage = "Не удалось подключиться к серверу";
+
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      errorMessage = `Не удалось подключиться к серверу API (${API_BASE_URL}). Убедитесь, что сервер запущен и доступен.`;
+    } else if (error instanceof Error) {
+      errorMessage = `Ошибка сети: ${error.message}`;
+    }
+
+    return {
+      status: 0,
+      error: {
+        error: "Network error",
+        message: errorMessage,
+      },
+    };
+  }
+};

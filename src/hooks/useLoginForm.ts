@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from '../api/auth';
 import { ILoginResponse } from '../types/user';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginFormData {
   email: string;
@@ -21,6 +22,7 @@ interface SnackbarState {
 }
 
 export const useLoginForm = () => {
+  const { login: authLogin } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -116,8 +118,17 @@ export const useLoginForm = () => {
       if (response.data) {
         const loginData: ILoginResponse = response.data;
 
+        // Сохраняем токен в AsyncStorage (для совместимости)
         await AsyncStorage.setItem('access_token', loginData.access_token);
         await AsyncStorage.setItem('user', JSON.stringify(loginData.user));
+
+        // Используем контекст авторизации
+        await authLogin(loginData.access_token, {
+          user_id: loginData.user.id,
+          email: loginData.user.email,
+          role: loginData.user.role,
+          full_name: `${loginData.user.first_name} ${loginData.user.last_name}`,
+        });
 
         setSnackbar({
           visible: true,
@@ -127,9 +138,6 @@ export const useLoginForm = () => {
 
         setFormData({ email: '', password: '' });
         setErrors({});
-
-        // Здесь можно добавить навигацию
-        // navigation.navigate('Home');
       }
     } catch (error) {
       setErrors({

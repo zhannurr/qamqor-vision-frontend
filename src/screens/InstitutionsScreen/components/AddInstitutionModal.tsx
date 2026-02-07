@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import { Text, TextInput } from 'react-native-paper';
+import { Text, TextInput, Checkbox } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { CustomButton } from '../../../components/UI/CustomButton';
 import { Modal } from '../../../components/UI/Modal';
+import { InstitutionFormData, ActiveModules } from '../types/institution.types';
+
+export type { InstitutionFormData };
 
 interface AddInstitutionModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (data: InstitutionFormData) => void;
-}
-
-export interface InstitutionFormData {
-  name: string;
-  description: string;
-  address: string;
-  mapLink: string;
 }
 
 export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
@@ -30,7 +27,13 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
     name: '',
     description: '',
     address: '',
-    mapLink: '',
+    map_url: '',
+    active_modules: {
+      smokDetection: false,
+      fireDetection: false,
+      accessControl: false,
+      perimeterMonitoring: false,
+    },
   });
 
   const handleSubmit = () => {
@@ -50,9 +53,25 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
       name: '',
       description: '',
       address: '',
-      mapLink: '',
+      map_url: '',
+      active_modules: {
+        smokDetection: false,
+        fireDetection: false,
+        accessControl: false,
+        perimeterMonitoring: false,
+      },
     });
     onClose();
+  };
+
+  const toggleModule = (module: keyof ActiveModules) => {
+    setFormData({
+      ...formData,
+      active_modules: {
+        ...formData.active_modules,
+        [module]: !formData.active_modules[module],
+      },
+    });
   };
 
   return (
@@ -153,9 +172,9 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               <TextInput
                 mode="outlined"
                 placeholder="Вставьте ссылку Google Maps / 2GIS"
-                value={formData.mapLink}
+                value={formData.map_url}
                 onChangeText={(text) =>
-                  setFormData({ ...formData, mapLink: text })
+                  setFormData({ ...formData, map_url: text })
                 }
                 style={styles.input}
                 outlineColor="#E0E0E0"
@@ -171,6 +190,63 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               <Text style={styles.hint}>
                 Вставьте ссылку на расположение учреждения из Google Maps или 2GIS
               </Text>
+            </View>
+
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Активные модули</Text>
+              <View style={styles.checkboxContainer}>
+                <TouchableOpacity 
+                  style={styles.checkboxRow} 
+                  onPress={() => toggleModule('smokDetection')}
+                  activeOpacity={0.7}
+                >
+                  <Checkbox
+                    status={formData.active_modules.smokDetection ? 'checked' : 'unchecked'}
+                    onPress={() => toggleModule('smokDetection')}
+                    color="#A89AB8"
+                  />
+                  <Text style={styles.checkboxLabel}>Обнаружение дыма</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.checkboxRow} 
+                  onPress={() => toggleModule('fireDetection')}
+                  activeOpacity={0.7}
+                >
+                  <Checkbox
+                    status={formData.active_modules.fireDetection ? 'checked' : 'unchecked'}
+                    onPress={() => toggleModule('fireDetection')}
+                    color="#A89AB8"
+                  />
+                  <Text style={styles.checkboxLabel}>Обнаружение огня</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.checkboxRow} 
+                  onPress={() => toggleModule('accessControl')}
+                  activeOpacity={0.7}
+                >
+                  <Checkbox
+                    status={formData.active_modules.accessControl ? 'checked' : 'unchecked'}
+                    onPress={() => toggleModule('accessControl')}
+                    color="#A89AB8"
+                  />
+                  <Text style={styles.checkboxLabel}>Контроль доступа</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.checkboxRow} 
+                  onPress={() => toggleModule('perimeterMonitoring')}
+                  activeOpacity={0.7}
+                >
+                  <Checkbox
+                    status={formData.active_modules.perimeterMonitoring ? 'checked' : 'unchecked'}
+                    onPress={() => toggleModule('perimeterMonitoring')}
+                    color="#A89AB8"
+                  />
+                  <Text style={styles.checkboxLabel}>Мониторинг периметра</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
       {/* Info Note */}
@@ -225,5 +301,18 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     marginLeft: 12,
     lineHeight: 18,
+  },
+  checkboxContainer: {
+    gap: 8,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    color: '#1B1B1B',
+    marginLeft: 8,
   },
 });

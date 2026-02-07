@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, Surface, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { Institution } from '../types/institution.types';
+import { Institution, ActiveModules } from '../types/institution.types';
 
 interface InstitutionCardProps {
   institution: Institution;
@@ -13,6 +13,24 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
   institution,
   onPress,
 }) => {
+  // Parse active modules from JSON string
+  let activeModules: ActiveModules = {
+    smokDetection: false,
+    fireDetection: false,
+    accessControl: false,
+    perimeterMonitoring: false,
+  };
+  
+  try {
+    if (institution.active_modules) {
+      activeModules = JSON.parse(institution.active_modules);
+    }
+  } catch (error) {
+    console.error('Error parsing active modules:', error);
+  }
+
+  const activeModulesCount = Object.values(activeModules).filter(Boolean).length;
+
   return (
     <Surface style={styles.card} elevation={1}>
       <View style={styles.header}>
@@ -20,35 +38,30 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
           mode="flat"
           style={[
             styles.statusChip,
-            institution.isActive ? styles.statusActive : styles.statusInactive,
+            institution.is_active ? styles.statusActive : styles.statusInactive,
           ]}
           textStyle={[
             styles.statusText,
-            institution.isActive ? styles.statusTextActive : styles.statusTextInactive,
+            institution.is_active ? styles.statusTextActive : styles.statusTextInactive,
           ]}
         >
-          {institution.isActive ? 'Активно' : 'Неактивно'}
+          {institution.is_active ? 'Активно' : 'Неактивно'}
         </Chip>
       </View>
 
       <Text style={styles.title}>{institution.name}</Text>
-      <Text style={styles.manager}>Руководитель: {institution.manager}</Text>
+      <Text style={styles.manager} numberOfLines={1}>{institution.description || 'Нет описания'}</Text>
 
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
-          <Icon name="camera-outline" size={20} color="#717182" />
-          <Text style={styles.statValue}>{institution.stats.cameras}</Text>
-          <Text style={styles.statLabel}>Камер</Text>
+          <Icon name="map-marker-outline" size={20} color="#717182" />
+          <Text style={styles.statValue} numberOfLines={1}>{institution.address}</Text>
+          <Text style={styles.statLabel}>Адрес</Text>
         </View>
         <View style={styles.statItem}>
-          <Icon name="account-group-outline" size={20} color="#717182" />
-          <Text style={styles.statValue}>{institution.stats.users}</Text>
-          <Text style={styles.statLabel}>Польз.</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Icon name="alert-outline" size={20} color="#717182" />
-          <Text style={styles.statValue}>{institution.stats.incidents}</Text>
-          <Text style={styles.statLabel}>Инцид.</Text>
+          <Icon name="puzzle-outline" size={20} color="#717182" />
+          <Text style={styles.statValue}>{activeModulesCount}</Text>
+          <Text style={styles.statLabel}>Модулей</Text>
         </View>
       </View>
 

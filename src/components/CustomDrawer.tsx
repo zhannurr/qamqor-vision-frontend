@@ -12,6 +12,7 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 
 interface DrawerItemProps {
   label: string;
@@ -19,6 +20,8 @@ interface DrawerItemProps {
   onPress: () => void;
   isActive?: boolean;
 }
+
+type IconName = React.ComponentProps<typeof Icon>['name'];
 
 const DrawerItem: React.FC<DrawerItemProps> = ({ label, icon, onPress, isActive }) => {
   return (
@@ -28,7 +31,7 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ label, icon, onPress, isActive 
       activeOpacity={0.7}
     >
       <Icon
-        name={icon}
+        name={icon as IconName}
         size={22}
         color={isActive ? '#8B7A9E' : '#717182'}
         style={styles.drawerIcon}
@@ -42,11 +45,16 @@ const DrawerItem: React.FC<DrawerItemProps> = ({ label, icon, onPress, isActive 
 
 const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const { state, navigation } = props;
+  const { logout, user } = useAuth();
   const currentRoute = state.routes[state.index].name;
 
-  const handleLogout = () => {
-    // Логика выхода из системы
-    console.log('Logout pressed');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      console.log('User logged out successfully');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -66,6 +74,22 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
             <Text style={styles.brandTagline}>Intelligent Monitoring</Text>
           </View>
         </View>
+
+        <Divider style={styles.divider} />
+
+        {/* User Info */}
+        {user && (
+          <View style={styles.userInfo}>
+            <View style={styles.userAvatar}>
+              <Icon name="account-circle" size={40} color="#8B7A9E" />
+            </View>
+            <View style={styles.userDetails}>
+              <Text style={styles.userName}>{user.full_name}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+              <Text style={styles.userRole}>{user.role === 'manager' ? 'Менеджер' : user.role}</Text>
+            </View>
+          </View>
+        )}
 
         <Divider style={styles.divider} />
 
@@ -184,6 +208,37 @@ const styles = StyleSheet.create({
   divider: {
     backgroundColor: '#F0F0F0',
     height: 1,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    marginHorizontal: 12,
+    marginVertical: 8,
+    backgroundColor: '#F9F8FB',
+    borderRadius: 12,
+  },
+  userAvatar: {
+    marginRight: 12,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1B1B1B',
+    marginBottom: 2,
+  },
+  userEmail: {
+    fontSize: 12,
+    color: '#717182',
+    marginBottom: 2,
+  },
+  userRole: {
+    fontSize: 11,
+    color: '#8B7A9E',
+    fontWeight: '500',
   },
   menuSection: {
     paddingTop: 8,
