@@ -8,9 +8,10 @@ import {
 import { Text } from 'react-native-paper';
 import { InstitutionCard } from './components/InstitutionCard';
 import { AddInstitutionModal, InstitutionFormData } from './components/AddInstitutionModal';
+import { DeleteConfirmationDialog } from './components/DeleteConfirmationDialog';
 import { useInstitutions } from './hooks/useInstitutions';
 import { CustomButton } from '../../components/UI/CustomButton';
-import { green } from 'react-native-reanimated/lib/typescript/Colors';
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 const { width } = Dimensions.get('window');
 
@@ -19,22 +20,84 @@ interface InstitutionsScreenProps {
 }
 
 const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) => {
-  const { institutions, loading, error, createInstitution } = useInstitutions();
+  const { institutions, loading, error, createInstitution, updateInstitution, deleteInstitution } = useInstitutions();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [editingInstitution, setEditingInstitution] = useState<any>(null);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [institutionToDelete, setInstitutionToDelete] = useState<any>(null);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'info'>('info');
+
+  const showSnackbar = (message: string, type: 'success' | 'error' | 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarType(type);
+    setSnackbarVisible(true);
+  };
 
   const handleAddInstitution = () => {
+    setModalMode('create');
+    setEditingInstitution(null);
     setIsModalVisible(true);
+  };
+
+  const handleEditInstitution = (institution: any) => {
+    setModalMode('edit');
+    setEditingInstitution(institution);
+    setIsModalVisible(true);
+  };
+
+  const handleDeleteInstitution = (institution: any) => {
+    setInstitutionToDelete(institution);
+    setDeleteDialogVisible(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (institutionToDelete) {
+      const result = await deleteInstitution(institutionToDelete.organization_id);
+      setInstitutionToDelete(null);
+      
+      if (result) {
+        showSnackbar('Учреждение успешно удалено', 'success');
+      } else {
+        showSnackbar('Не удалось удалить учреждение', 'error');
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogVisible(false);
+    setInstitutionToDelete(null);
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+    setEditingInstitution(null);
   };
 
   const handleSubmitInstitution = async (data: InstitutionFormData) => {
-    console.log('New institution data:', data);
-    const result = await createInstitution(data);
-    if (result) {
-      setIsModalVisible(false);
+    console.log('Institution data:', data, 'Mode:', modalMode);
+    let result;
+    
+    if (modalMode === 'edit' && editingInstitution) {
+      result = await updateInstitution(editingInstitution.organization_id, data);
+      if (result) {
+        setIsModalVisible(false);
+        setEditingInstitution(null);
+        showSnackbar('Учреждение успешно обновлено', 'success');
+      } else {
+        showSnackbar('Не удалось обновить учреждение', 'error');
+      }
+    } else {
+      result = await createInstitution(data);
+      if (result) {
+        setIsModalVisible(false);
+        setEditingInstitution(null);
+        showSnackbar('Учреждение успешно создано', 'success');
+      } else {
+        showSnackbar('Не удалось создать учреждение', 'error');
+      }
     }
   };
 
@@ -72,6 +135,8 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
               <InstitutionCard
                 institution={institution}
                 onPress={() => handleSelectInstitution(institution)}
+                onEdit={() => handleEditInstitution(institution)}
+                onDelete={() => handleDeleteInstitution(institution)}
               />
             </View>
           ))}
@@ -83,6 +148,34 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
         visible={isModalVisible}
         onClose={handleCloseModal}
         onSubmit={handleSubmitInstitution}
+        mode={modalMode}
+        initialData={editingInstitution ? {
+          name: editingInstitution.name,
+          description: editingInstitution.description,
+          address: editingInstitution.address,
+          map_url: editingInstitution.map_url,
+          active_modules: JSON.parse(editingInstitution.active_modules),
+          organization_id: editingInstitution.organization_id,
+          is_active: editingInstitution.is_active,
+        } : undefined}
+        onValidationError={(message) => showSnackbar(message, 'error')}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        visible={deleteDialogVisible}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        institutionName={institutionToDelete?.name || ''}
+      />
+
+      {/* Snackbar */}
+      <CustomSnackbar
+        visible={snackbarVisible}
+        message={snackbarMessage}
+        type={snackbarType}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
       />
     </View>
   );

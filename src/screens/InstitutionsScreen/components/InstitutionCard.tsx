@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, Surface, Chip } from 'react-native-paper';
+import { Text, Surface, Chip, Menu } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Institution, ActiveModules } from '../types/institution.types';
 
 interface InstitutionCardProps {
   institution: Institution;
   onPress: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 export const InstitutionCard: React.FC<InstitutionCardProps> = ({
   institution,
   onPress,
+  onEdit,
+  onDelete,
 }) => {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleEdit = () => {
+    closeMenu();
+    onEdit();
+  };
+
+  const handleDelete = () => {
+    closeMenu();
+    onDelete();
+  };
+
   // Parse active modules from JSON string
   let activeModules: ActiveModules = {
     smokDetection: false,
@@ -47,6 +66,26 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
         >
           {institution.is_active ? 'Активно' : 'Неактивно'}
         </Chip>
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={
+            <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
+              <Icon name="dots-vertical" size={24} color="#717182" />
+            </TouchableOpacity>
+          }
+        >
+          <Menu.Item
+            onPress={handleEdit}
+            title="Редактировать"
+            leadingIcon="pencil-outline"
+          />
+          <Menu.Item
+            onPress={handleDelete}
+            title="Удалить"
+            leadingIcon="delete-outline"
+          />
+        </Menu>
       </View>
 
       <Text style={styles.title}>{institution.name}</Text>
@@ -85,6 +124,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 16,
+  },
+  menuButton: {
+    padding: 4,
   },
   iconContainer: {
     width: 56,

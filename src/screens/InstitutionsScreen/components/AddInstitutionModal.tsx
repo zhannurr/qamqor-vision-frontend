@@ -16,12 +16,18 @@ interface AddInstitutionModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (data: InstitutionFormData) => void;
+  mode?: 'create' | 'edit';
+  initialData?: InstitutionFormData & { organization_id?: string; is_active?: boolean };
+  onValidationError?: (message: string) => void;
 }
 
 export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
   visible,
   onClose,
   onSubmit,
+  mode = 'create',
+  initialData,
+  onValidationError,
 }) => {
   const [formData, setFormData] = useState<InstitutionFormData>({
     name: '',
@@ -36,10 +42,39 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
     },
   });
 
+  // Загружаем initialData при открытии в режиме редактирования
+  React.useEffect(() => {
+    if (visible && mode === 'edit' && initialData) {
+      setFormData({
+        name: initialData.name,
+        description: initialData.description,
+        address: initialData.address,
+        map_url: initialData.map_url,
+        active_modules: initialData.active_modules,
+      });
+    } else if (visible && mode === 'create') {
+      // Сбрасываем форму для создания
+      setFormData({
+        name: '',
+        description: '',
+        address: '',
+        map_url: '',
+        active_modules: {
+          smokDetection: false,
+          fireDetection: false,
+          accessControl: false,
+          perimeterMonitoring: false,
+        },
+      });
+    }
+  }, [visible, mode, initialData]);
+
   const handleSubmit = () => {
     // Валидация
     if (!formData.name || !formData.address) {
-      alert('Пожалуйста, заполните обязательные поля');
+      if (onValidationError) {
+        onValidationError('Пожалуйста, заполните обязательные поля');
+      }
       return;
     }
 
@@ -78,7 +113,7 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
     <Modal
       visible={visible}
       onDismiss={handleClose}
-      title="Добавить учреждение"
+      title={mode === 'edit' ? 'Редактировать учреждение' : 'Добавить учреждение'}
       subtitle="Заполните информацию об учреждении"
       icon="office-building-outline"
       iconColor="#8B7A9E"
@@ -95,7 +130,7 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
             variant="outline"
           />
           <CustomButton
-            label="Создать учреждение"
+            label={mode === 'edit' ? 'Сохранить изменения' : 'Создать учреждение'}
             onPress={handleSubmit}
             variant="primary"
           />

@@ -13,6 +13,7 @@ import {
 } from '@react-navigation/drawer';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
+import { LogoutConfirmationDialog } from './LogoutConfirmationDialog';
 
 interface DrawerItemProps {
   label: string;
@@ -47,14 +48,23 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const { state, navigation } = props;
   const { logout, user } = useAuth();
   const currentRoute = state.routes[state.index].name;
+  const [logoutDialogVisible, setLogoutDialogVisible] = React.useState(false);
 
-  const handleLogout = async () => {
+  const handleLogoutPress = () => {
+    setLogoutDialogVisible(true);
+  };
+
+  const handleConfirmLogout = async () => {
     try {
       await logout();
       console.log('User logged out successfully');
     } catch (error) {
       console.error('Error during logout:', error);
     }
+  };
+
+  const handleCancelLogout = () => {
+    setLogoutDialogVisible(false);
   };
 
   return (
@@ -157,13 +167,20 @@ const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
         <Divider style={styles.divider} />
         <TouchableOpacity
           style={styles.logoutButton}
-          onPress={handleLogout}
+          onPress={handleLogoutPress}
           activeOpacity={0.7}
         >
           <Icon name="logout" size={22} color="#717182" style={styles.drawerIcon} />
           <Text style={styles.logoutText}>Выйти</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Logout Confirmation Dialog */}
+      <LogoutConfirmationDialog
+        visible={logoutDialogVisible}
+        onClose={handleCancelLogout}
+        onConfirm={handleConfirmLogout}
+      />
     </View>
   );
 };
