@@ -10,7 +10,7 @@ import LiveMonitoringScreen from '../screens/LiveMonitoringScreen';
 import IncidentsScreen from '../screens/IncidentsScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import AnalyticsScreen from '../screens/AnalyticsScreen';
-import UsersScreen from '../screens/UsersScreen';
+import UsersScreen from '../screens/UsersScreen/UsersScreen';
 import InstitutionsScreen from '../screens/InstitutionsScreen';
 import InstitutionDetailsScreen from '../screens/InstitutionsScreen/InstitutionDetailsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
