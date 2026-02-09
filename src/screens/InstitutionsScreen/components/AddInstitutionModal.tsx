@@ -142,7 +142,8 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               <Text style={styles.label}>Название учреждения</Text>
               <TextInput
                 mode="outlined"
-                placeholder="Главный офис, Склад А"
+                placeholder="Введите название учреждения"
+                placeholderTextColor="#9E9E9E"
                 value={formData.name}
                 onChangeText={(text) =>
                   setFormData({ ...formData, name: text })
@@ -165,6 +166,7 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               <TextInput
                 mode="outlined"
                 placeholder="Введите описание учреждения"
+                placeholderTextColor="#9E9E9E"
                 value={formData.description}
                 onChangeText={(text) =>
                   setFormData({ ...formData, description: text })
@@ -181,7 +183,8 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               <Text style={styles.label}>Адрес</Text>
               <TextInput
                 mode="outlined"
-                placeholder="ул. Абая, 123"
+                placeholder="Введите адрес"
+                placeholderTextColor="#9E9E9E"
                 value={formData.address}
                 onChangeText={(text) =>
                   setFormData({ ...formData, address: text })
@@ -206,7 +209,8 @@ export const AddInstitutionModal: React.FC<AddInstitutionModalProps> = ({
               </Text>
               <TextInput
                 mode="outlined"
-                placeholder="Вставьте ссылку Google Maps / 2GIS"
+                placeholder="Введите ссылку на карту"
+                placeholderTextColor="#9E9E9E"
                 value={formData.map_url}
                 onChangeText={(text) =>
                   setFormData({ ...formData, map_url: text })

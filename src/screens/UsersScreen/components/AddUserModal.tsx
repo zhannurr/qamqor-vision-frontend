@@ -155,7 +155,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
         <Text style={styles.label}>Email</Text>
         <TextInput
           mode="outlined"
-          placeholder="example@mail.com"
+          placeholder="Введите email"
+          placeholderTextColor="#9E9E9E"
           value={formData.email}
           onChangeText={(text) => handleInputChange('email', text)}
           style={styles.input}
@@ -183,7 +184,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
           <Text style={styles.label}>Имя</Text>
           <TextInput
             mode="outlined"
-            placeholder="Иван"
+            placeholder="Введите имя"
+            placeholderTextColor="#9E9E9E"
             value={formData.first_name}
             onChangeText={(text) => handleInputChange('first_name', text)}
             style={styles.input}
@@ -207,7 +209,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
           <Text style={styles.label}>Фамилия</Text>
           <TextInput
             mode="outlined"
-            placeholder="Иванов"
+            placeholder="Введите фамилию"
+            placeholderTextColor="#9E9E9E"
             value={formData.last_name}
             onChangeText={(text) => handleInputChange('last_name', text)}
             style={styles.input}
@@ -228,7 +231,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
         </Text>
         <TextInput
           mode="outlined"
-          placeholder="+7 (xxx) xxx-xx-xx"
+          placeholder="Введите номер телефона"
+          placeholderTextColor="#9E9E9E"
           value={formData.phone_number}
           onChangeText={(text) => handleInputChange('phone_number', text)}
           style={styles.input}
@@ -302,7 +306,8 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
           <Text style={styles.label}>Пароль</Text>
           <TextInput
             mode="outlined"
-            placeholder="Минимум 6 символов"
+            placeholder="Введите пароль (минимум 6 символов)"
+            placeholderTextColor="#9E9E9E"
             value={formData.password}
             onChangeText={(text) => handleInputChange('password', text)}
             style={styles.input}
