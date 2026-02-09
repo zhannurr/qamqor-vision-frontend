@@ -4,7 +4,8 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+import { useFonts } from 'expo-font';
 import { theme } from "./src/theme";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { LoginScreen, RegisterScreen } from "./src/screens/AuthScreen";
@@ -42,6 +43,24 @@ const AppNavigator: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [fontsLoaded] = useFonts({
+    'Montserrat-Regular': require('./assets/fonts/static/Montserrat-Regular.ttf'),
+    'Montserrat-Medium': require('./assets/fonts/static/Montserrat-Medium.ttf'),
+    'Montserrat-SemiBold': require('./assets/fonts/static/Montserrat-SemiBold.ttf'),
+    'Montserrat-Bold': require('./assets/fonts/static/Montserrat-Bold.ttf'),
+    'Montserrat-ExtraBold': require('./assets/fonts/static/Montserrat-ExtraBold.ttf'),
+    'Montserrat-Light': require('./assets/fonts/static/Montserrat-Light.ttf'),
+    'Montserrat-ExtraLight': require('./assets/fonts/static/Montserrat-ExtraLight.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A89AB8" />
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>

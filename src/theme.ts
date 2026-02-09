@@ -1,29 +1,122 @@
 // theme.ts
-import { DefaultTheme, configureFonts } from 'react-native-paper';
+import { MD3LightTheme as DefaultTheme } from 'react-native-paper';
+import type { MD3Theme } from 'react-native-paper';
 
-const fontConfig = {
-  default: {
-    regular: {
-      fontFamily: 'System',
+export const theme: MD3Theme = {
+  ...DefaultTheme,
+  fonts: {
+    ...DefaultTheme.fonts,
+    default: {
+      fontFamily: 'Montserrat-Regular',
       fontWeight: '400',
+      letterSpacing: 0,
     },
-    medium: {
-      fontFamily: 'System',
+    displayLarge: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 57,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 64,
+    },
+    displayMedium: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 45,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 52,
+    },
+    displaySmall: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 36,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 44,
+    },
+    headlineLarge: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 32,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 40,
+    },
+    headlineMedium: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 28,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 36,
+    },
+    headlineSmall: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 24,
+      fontWeight: '400',
+      letterSpacing: 0,
+      lineHeight: 32,
+    },
+    titleLarge: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 22,
       fontWeight: '500',
+      letterSpacing: 0,
+      lineHeight: 28,
     },
-    light: {
-      fontFamily: 'System',
-      fontWeight: '300',
+    titleMedium: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 16,
+      fontWeight: '500',
+      letterSpacing: 0.15,
+      lineHeight: 24,
     },
-    thin: {
-      fontFamily: 'System',
-      fontWeight: '100',
+    titleSmall: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 14,
+      fontWeight: '500',
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    bodyLarge: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 16,
+      fontWeight: '400',
+      letterSpacing: 0.5,
+      lineHeight: 24,
+    },
+    bodyMedium: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 14,
+      fontWeight: '400',
+      letterSpacing: 0.25,
+      lineHeight: 20,
+    },
+    bodySmall: {
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 12,
+      fontWeight: '400',
+      letterSpacing: 0.4,
+      lineHeight: 16,
+    },
+    labelLarge: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 14,
+      fontWeight: '500',
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelMedium: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 12,
+      fontWeight: '500',
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    labelSmall: {
+      fontFamily: 'Montserrat-Medium',
+      fontSize: 11,
+      fontWeight: '500',
+      letterSpacing: 0.5,
+      lineHeight: 16,
     },
   },
-};
-
-export const theme = {
-  ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: '#1B1B1B',
