@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { UserFormData, roleDisplayNames } from '../types/user.types';
+import { useAddUserForm } from '../hooks/useAddUserForm';
 import { Modal } from '../../../components/UI/Modal';
 import { CustomButton } from '../../../components/UI/CustomButton';
 
@@ -33,95 +30,15 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
   mode,
   initialData,
 }) => {
-  const [formData, setFormData] = useState<UserFormData>({
-    email: '',
-    first_name: '',
-    last_name: '',
-    phone_number: '',
-    role: 'user',
-    password: '',
-    push_notification_permission: false,
-  });
-
-  const [errors, setErrors] = useState<Partial<Record<keyof UserFormData, string>>>({});
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
-
-  useEffect(() => {
-    if (visible) {
-      if (mode === 'edit' && initialData) {
-        setFormData({
-          ...initialData,
-          password: '',
-        });
-      } else {
-        setFormData({
-          email: '',
-          first_name: '',
-          last_name: '',
-          phone_number: '',
-          role: 'user',
-          password: '',
-          push_notification_permission: false,
-        });
-      }
-      setErrors({});
-    }
-  }, [visible, mode, initialData]);
-
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof UserFormData, string>> = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Некорректный email';
-    }
-
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'Имя обязательно';
-    }
-
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'Фамилия обязательна';
-    }
-
-    if (mode === 'create' && !formData.password) {
-      newErrors.password = 'Пароль обязателен';
-    } else if (formData.password && formData.password.length < 6) {
-      newErrors.password = 'Пароль должен быть не менее 6 символов';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onSubmit(formData);
-    }
-  };
-
-  const handleInputChange = (field: keyof UserFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  const handleClose = () => {
-    setFormData({
-      email: '',
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      role: 'user',
-      password: '',
-      push_notification_permission: false,
-    });
-    setErrors({});
-    setShowRoleDropdown(false);
-    onClose();
-  };
+  const {
+    formData,
+    errors,
+    showRoleDropdown,
+    setShowRoleDropdown,
+    handleInputChange,
+    handleSubmit,
+    handleClose,
+  } = useAddUserForm(visible, mode, initialData, onClose, onSubmit);
 
   return (
     <Modal

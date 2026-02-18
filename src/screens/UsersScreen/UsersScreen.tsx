@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { Text, Surface } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AddUserModal } from './components/AddUserModal';
 import { DeleteConfirmation } from '../../components/DeleteConfrimation';
 import { UserDetailsModal } from './components/UserDetailsModal';
-import { useUsers } from './hooks/useUsers';
-import { UserFormData, roleColors, roleDisplayNames } from './types/user.types';
+import { useUsersScreen } from './hooks/useUsersScreen';
+import { roleColors, roleDisplayNames } from './types/user.types';
 import { CustomButton } from '../../components/UI/CustomButton';
 import { ContextMenu } from '../../components/UI/ContextMenu';
 import { Table, TableColumn } from '../../components/UI/Table';
@@ -23,137 +22,34 @@ interface UsersScreenProps {
 }
 
 const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
-  const { users, loading, error, createUser, updateUser, deleteUser, getUserDetails, getLoginHistory } = useUsers();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
-  const [editingUser, setEditingUser] = useState<any>(null);
-  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<any>(null);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'info'>('info');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-
-  const showSnackbar = (message: string, type: 'success' | 'error' | 'info') => {
-    setSnackbarMessage(message);
-    setSnackbarType(type);
-    setSnackbarVisible(true);
-  };
-
-  const handleAddUser = () => {
-    setModalMode('create');
-    setEditingUser(null);
-    setIsModalVisible(true);
-  };
-
-  const handleEditUser = (user: any) => {
-    setModalMode('edit');
-    setEditingUser(user);
-    setIsModalVisible(true);
-  };
-
-  const handleDeleteUser = (user: any) => {
-    setUserToDelete(user);
-    setDeleteDialogVisible(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (userToDelete) {
-      const result = await deleteUser(userToDelete.id);
-      setDeleteDialogVisible(false);
-      setUserToDelete(null);
-
-      if (result) {
-        showSnackbar('Пользователь успешно удален', 'success');
-      } else {
-        showSnackbar('Не удалось удалить пользователя', 'error');
-      }
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setDeleteDialogVisible(false);
-    setUserToDelete(null);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setEditingUser(null);
-  };
-
-  const handleSubmitUser = async (data: UserFormData) => {
-    let result;
-
-    if (modalMode === 'edit' && editingUser) {
-      result = await updateUser(editingUser.id, data);
-      if (result) {
-        setIsModalVisible(false);
-        setEditingUser(null);
-        showSnackbar('Пользователь успешно обновлен', 'success');
-      } else {
-        showSnackbar('Не удалось обновить пользователя', 'error');
-      }
-    } else {
-      result = await createUser(data);
-      if (result) {
-        setIsModalVisible(false);
-        setEditingUser(null);
-        showSnackbar('Пользователь успешно создан', 'success');
-      } else {
-        showSnackbar('Не удалось создать пользователя', 'error');
-      }
-    }
-  };
-
-  const handleSelectUser = (user: any) => {
-    setSelectedUser(user);
-    setDetailsModalVisible(true);
-  };
-
-  const handleCloseDetailsModal = () => {
-    setDetailsModalVisible(false);
-    setSelectedUser(null);
-  };
-
-  const handleEditFromDetails = () => {
-    if (selectedUser) {
-      setDetailsModalVisible(false);
-      handleEditUser(selectedUser);
-    }
-  };
-
-  const handleBlockUser = async () => {
-  };
-
-  const handleDeleteFromDetails = () => {
-    if (selectedUser) {
-      setDetailsModalVisible(false);
-      handleDeleteUser(selectedUser);
-    }
-  };
-
-  // Filter users based on search query
-  const filteredUsers = (users || []).filter((user: any) => {
-    const matchesSearch =
-      searchQuery === '' ||
-      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (user.organization_name && user.organization_name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    return matchesSearch;
-  });
-
-  const getStatusColor = (isVerified: boolean) => {
-    return isVerified ? '#4CAF50' : '#FFA726';
-  };
-
-  const getStatusText = (isVerified: boolean) => {
-    return isVerified ? 'Активен' : 'Ожидает активации';
-  };
+  const {
+    filteredUsers,
+    searchQuery,
+    setSearchQuery,
+    isModalVisible,
+    modalMode,
+    editingUser,
+    deleteDialogVisible,
+    detailsModalVisible,
+    selectedUser,
+    snackbarVisible,
+    snackbarMessage,
+    snackbarType,
+    setSnackbarVisible,
+    handleAddUser,
+    handleEditUser,
+    handleDeleteUser,
+    handleConfirmDelete,
+    handleCancelDelete,
+    handleCloseModal,
+    handleSubmitUser,
+    handleSelectUser,
+    handleCloseDetailsModal,
+    handleEditFromDetails,
+    handleDeleteFromDetails,
+    getUserDetails,
+    getLoginHistory,
+  } = useUsersScreen();
 
   const tableColumns: TableColumn<any>[] = [
     {
@@ -231,7 +127,6 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <Text style={styles.title}>Пользователи</Text>
@@ -245,7 +140,6 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         />
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <MaterialCommunityIcons name="magnify" size={20} color="#9E9E9E" />
@@ -262,21 +156,8 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-
-        <View style={styles.filterButtons}>
-          <TouchableOpacity style={styles.filterButton}>
-            <MaterialCommunityIcons name="filter-variant" size={18} color="#A89AB8" />
-            <Text style={styles.filterButtonText}>Все учреждения</Text>
-            <MaterialCommunityIcons name="chevron-down" size={18} color="#A89AB8" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.filterButton}>
-            <Text style={styles.filterButtonText}>Ещё фильтры</Text>
-            <MaterialCommunityIcons name="tune" size={18} color="#A89AB8" />
-          </TouchableOpacity>
-        </View>
       </View>
 
-      {/* Table */}
       <Table
         columns={tableColumns}
         data={filteredUsers}
@@ -285,7 +166,6 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         alternateRowColors={true}
       />
 
-      {/* Modals */}
       <AddUserModal
         visible={isModalVisible}
         mode={modalMode}
@@ -307,7 +187,7 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         user={selectedUser}
         onClose={handleCloseDetailsModal}
         onEdit={handleEditFromDetails}
-        onBlock={handleBlockUser}
+        onBlock={() => {}}
         onDelete={handleDeleteFromDetails}
         onGetUserDetails={getUserDetails}
         onGetLoginHistory={getLoginHistory}
@@ -371,29 +251,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 14,
     color: '#1B1B1B',
-  },
-  filterButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  filterButtonText: {
-    fontSize: 13,
-    color: '#717182',
-    fontWeight: '500',
   },
   tableCellText: {
     fontSize: 13,

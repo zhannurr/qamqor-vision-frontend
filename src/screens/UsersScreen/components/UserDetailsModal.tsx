@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { Modal } from '../../../components/UI/Modal';
-import { CustomButton } from '../../../components/UI/CustomButton';
-import { roleDisplayNames, roleColors } from '../types/user.types';
+import { roleDisplayNames } from '../types/user.types';
+import { useLoginHistory } from '../hooks/useLoginHistory';
 import type { LoginHistoryEntry } from '../../../api/users';
 
 interface UserDetailsModalProps {
@@ -23,13 +18,6 @@ interface UserDetailsModalProps {
   onGetLoginHistory?: (userId: string, limit?: number, offset?: number) => Promise<{ login_history: LoginHistoryEntry[]; limit: number; offset: number } | null>;
 }
 
-const TAB_KEYS = {
-  OPERATOR: 'operator',
-  REMOVED: 'removed',
-} as const;
-
-const LOGIN_HISTORY_PAGE_SIZE = 10;
-
 export const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   visible,
   onClose,
@@ -40,35 +28,11 @@ export const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   onGetUserDetails,
   onGetLoginHistory,
 }) => {
-  const [activeTab, setActiveTab] = useState<string>(TAB_KEYS.OPERATOR);
-  const [loginHistory, setLoginHistory] = useState<LoginHistoryEntry[]>([]);
-  const [loadingHistory, setLoadingHistory] = useState(false);
-
-  useEffect(() => {
-    if (visible && user?.id && onGetLoginHistory) {
-      loadLoginHistory();
-    } else if (!visible) {
-      setLoginHistory([]);
-    }
-  }, [visible, user?.id]);
-
-  const loadLoginHistory = async () => {
-    if (!user?.id || !onGetLoginHistory) return;
-    setLoadingHistory(true);
-    try {
-      const result = await onGetLoginHistory(user.id, LOGIN_HISTORY_PAGE_SIZE, 0);
-      if (result?.login_history) {
-        setLoginHistory(result.login_history);
-      } else {
-        setLoginHistory([]);
-      }
-    } catch (error) {
-      console.error('Error loading login history:', error);
-      setLoginHistory([]);
-    } finally {
-      setLoadingHistory(false);
-    }
-  };
+  const { loginHistory, loadingHistory } = useLoginHistory(
+    visible,
+    user?.id,
+    onGetLoginHistory
+  );
 
   if (!user) return null;
 
