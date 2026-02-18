@@ -8,7 +8,7 @@ import {
 import { Text } from 'react-native-paper';
 import { InstitutionCard } from './components/InstitutionCard';
 import { AddInstitutionModal, InstitutionFormData } from './components/AddInstitutionModal';
-import { DeleteConfirmationDialog } from './components/DeleteConfirmationDialog';
+import { DeleteConfirmation } from '../../components/DeleteConfrimation';
 import { useInstitutions } from './hooks/useInstitutions';
 import { CustomButton } from '../../components/UI/CustomButton';
 import CustomSnackbar from '../../components/CustomSnackbar';
@@ -162,11 +162,12 @@ const InstitutionsScreen: React.FC<InstitutionsScreenProps> = ({ navigation }) =
       />
 
       {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
+      <DeleteConfirmation
         visible={deleteDialogVisible}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-        institutionName={institutionToDelete?.name || ''}
+        message="Вы уверены, что хотите удалить учреждение?"
+        warning="Все связанные данные, включая камеры и записи, будут безвозвратно удалены."
       />
 
       {/* Snackbar */}

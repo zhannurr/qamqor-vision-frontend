@@ -1,22 +1,23 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { CustomButton } from '../../../components/UI/CustomButton';
-import { Modal } from '../../../components/UI/Modal';
+import { CustomButton } from './UI/CustomButton';
+import { Modal } from './UI/Modal';
 
-interface DeleteConfirmationDialogProps {
+interface DeleteConfirmationProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  institutionName: string;
+  message: string;
+  warning: string;
 }
 
-export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
+export const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   visible,
   onClose,
   onConfirm,
-  institutionName,
+  message,
+  warning,
 }) => {
   const handleConfirm = () => {
     onConfirm();
@@ -54,11 +55,10 @@ export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> =
     >
       <View style={styles.content}>
         <Text style={styles.message}>
-          Вы уверены, что хотите удалить учреждение{' '}
-          <Text style={styles.institutionName}>"{institutionName}"</Text>?
+          {message}
         </Text>
         <Text style={styles.warning}>
-          Все связанные данные, включая камеры и записи, будут безвозвратно удалены.
+          {warning}
         </Text>
       </View>
     </Modal>
@@ -73,10 +73,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#1B1B1B',
     lineHeight: 22,
-  },
-  institutionName: {
-    fontWeight: '700',
-    color: '#1B1B1B',
   },
   warning: {
     fontSize: 14,

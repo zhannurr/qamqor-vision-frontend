@@ -9,11 +9,12 @@ import {
 import { Text, Surface } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AddUserModal } from './components/AddUserModal';
-import { DeleteConfirmationDialog } from './components/DeleteConfirmationDialog';
+import { DeleteConfirmation } from '../../components/DeleteConfrimation';
 import { UserDetailsModal } from './components/UserDetailsModal';
 import { useUsers } from './hooks/useUsers';
 import { UserFormData, roleColors, roleDisplayNames } from './types/user.types';
 import { CustomButton } from '../../components/UI/CustomButton';
+import { ContextMenu } from '../../components/UI/ContextMenu';
 import { Table, TableColumn } from '../../components/UI/Table';
 import CustomSnackbar from '../../components/CustomSnackbar';
 
@@ -172,6 +173,12 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
       render: (user) => <Text style={styles.tableCellText}>{user.email}</Text>,
     },
     {
+      key: 'phone_number',
+      header: 'ТЕЛЕФОН',
+      flex: 1.2,
+      render: (user) => <Text style={styles.tableCellText}>{user.phone_number}</Text>,
+    },
+    {
       key: 'role',
       header: 'РОЛЬ',
       flex: 1.2,
@@ -193,7 +200,33 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         </Text>
       ),
     },
-    
+    {
+      key: 'actions',
+      header: 'ДЕЙСТВИЯ',
+      flex: 0.4,
+      render: (user) => (
+        <ContextMenu
+          items={[
+            {
+              title: 'Редактировать',
+              leadingIcon: 'pencil-outline',
+              onPress: () => handleEditUser(user),
+            },
+            {
+              title: 'Удалить',
+              leadingIcon: 'delete-outline',
+              onPress: () => handleDeleteUser(user),
+              destructive: true,
+            },
+          ]}
+          anchor={
+            <View style={styles.actionsAnchor}>
+              <MaterialCommunityIcons name="dots-vertical" size={24} color="#717182" />
+            </View>
+          }
+        />
+      ),
+    },
   ];
 
   return (
@@ -261,11 +294,12 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         onSubmit={handleSubmitUser}
       />
 
-      <DeleteConfirmationDialog
+      <DeleteConfirmation
         visible={deleteDialogVisible}
-        userName={userToDelete ? `${userToDelete.first_name} ${userToDelete.last_name}` : ''}
         onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onClose={handleCancelDelete}
+        message="Вы уверены, что хотите удалить пользователя?"
+        warning="Все связанные данные, включая камеры и записи, будут безвозвратно удалены."
       />
 
       <UserDetailsModal
@@ -375,6 +409,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  actionsAnchor: {
+    padding: 4,
+    alignItems: 'flex-end',
   },
 });
 
