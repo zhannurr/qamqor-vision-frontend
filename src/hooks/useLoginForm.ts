@@ -112,6 +112,11 @@ export const useLoginForm = () => {
         }
 
         setErrors({ general: errorMessage });
+        setSnackbar({
+          visible: true,
+          message: errorMessage,
+          type: 'error',
+        });
         return;
       }
 
@@ -140,8 +145,12 @@ export const useLoginForm = () => {
         setErrors({});
       }
     } catch (error) {
-      setErrors({
-        general: 'Не удалось подключиться к серверу. Проверьте подключение к интернету.',
+      const errorMessage = 'Не удалось подключиться к серверу. Проверьте подключение к интернету.';
+      setErrors({ general: errorMessage });
+      setSnackbar({
+        visible: true,
+        message: errorMessage,
+        type: 'error',
       });
     } finally {
       setIsSubmitting(false);

@@ -10,6 +10,7 @@ import { Text, Surface } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AddUserModal } from './components/AddUserModal';
 import { DeleteConfirmationDialog } from './components/DeleteConfirmationDialog';
+import { UserDetailsModal } from './components/UserDetailsModal';
 import { useUsers } from './hooks/useUsers';
 import { UserFormData, roleColors, roleDisplayNames } from './types/user.types';
 import { CustomButton } from '../../components/UI/CustomButton';
@@ -21,7 +22,7 @@ interface UsersScreenProps {
 }
 
 const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
-  const { users, loading, error, createUser, updateUser, deleteUser } = useUsers();
+  const { users, loading, error, createUser, updateUser, deleteUser, getUserDetails, getLoginHistory } = useUsers();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [editingUser, setEditingUser] = useState<any>(null);
@@ -32,6 +33,8 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
   const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'info'>('info');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const showSnackbar = (message: string, type: 'success' | 'error' | 'info') => {
     setSnackbarMessage(message);
@@ -105,12 +108,34 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
   };
 
   const handleSelectUser = (user: any) => {
-    // Navigate to user details if needed
-    console.log('Selected user:', user);
+    setSelectedUser(user);
+    setDetailsModalVisible(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setDetailsModalVisible(false);
+    setSelectedUser(null);
+  };
+
+  const handleEditFromDetails = () => {
+    if (selectedUser) {
+      setDetailsModalVisible(false);
+      handleEditUser(selectedUser);
+    }
+  };
+
+  const handleBlockUser = async () => {
+  };
+
+  const handleDeleteFromDetails = () => {
+    if (selectedUser) {
+      setDetailsModalVisible(false);
+      handleDeleteUser(selectedUser);
+    }
   };
 
   // Filter users based on search query
-  const filteredUsers = users.filter((user: any) => {
+  const filteredUsers = (users || []).filter((user: any) => {
     const matchesSearch =
       searchQuery === '' ||
       user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -159,30 +184,6 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
       ),
     },
     {
-      key: 'organization',
-      header: 'ОРГАНИЗАЦИЯ',
-      flex: 1.2,
-      render: (user) => <Text style={styles.tableCellText}>{user.organization_name || '-'}</Text>,
-    },
-    {
-      key: 'institution',
-      header: 'УЧРЕЖДЕНИЕ',
-      flex: 1.2,
-      render: (user) => <Text style={styles.tableCellText}>{user.institution_name || '-'}</Text>,
-    },
-    {
-      key: 'status',
-      header: 'СТАТУС',
-      flex: 1,
-      render: (user) => (
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(user.is_verified) }]}>
-          <Text style={styles.statusBadgeText}>
-            {getStatusText(user.is_verified)}
-          </Text>
-        </View>
-      ),
-    },
-    {
       key: 'created',
       header: 'ДАТА РЕГИСТРАЦИИ',
       flex: 1,
@@ -192,16 +193,7 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         </Text>
       ),
     },
-    {
-      key: 'lastLogin',
-      header: 'ПОСЛЕДНИЙ ВХОД',
-      flex: 1,
-      render: (user) => (
-        <Text style={styles.tableCellText}>
-          {user.last_login ? new Date(user.last_login).toLocaleDateString('ru-RU') : 'Никогда'}
-        </Text>
-      ),
-    },
+    
   ];
 
   return (
@@ -274,6 +266,17 @@ const UsersScreen: React.FC<UsersScreenProps> = ({ navigation }) => {
         userName={userToDelete ? `${userToDelete.first_name} ${userToDelete.last_name}` : ''}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+
+      <UserDetailsModal
+        visible={detailsModalVisible}
+        user={selectedUser}
+        onClose={handleCloseDetailsModal}
+        onEdit={handleEditFromDetails}
+        onBlock={handleBlockUser}
+        onDelete={handleDeleteFromDetails}
+        onGetUserDetails={getUserDetails}
+        onGetLoginHistory={getLoginHistory}
       />
 
       <CustomSnackbar
@@ -369,17 +372,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   roleBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  statusBadgeText: {
     fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',

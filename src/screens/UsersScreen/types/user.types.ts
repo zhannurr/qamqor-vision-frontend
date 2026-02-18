@@ -5,14 +5,8 @@ export interface User {
   last_name: string;
   phone_number?: string;
   role: string;
-  is_verified: boolean;
   created_at: string;
   updated_at: string;
-  // Optional fields for display
-  organization_id?: string;
-  organization_name?: string;
-  institution_name?: string;
-  status?: 'Активен' | 'Ожидает активации' | 'Заблокирован';
   last_login?: string;
 }
 

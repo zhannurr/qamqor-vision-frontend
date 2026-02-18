@@ -129,3 +129,43 @@ export const register = async (
     };
   }
 };
+
+export interface IForgotPasswordRequest {
+  email: string;
+}
+
+export interface IForgotPasswordResponse {
+  message: string;
+}
+
+export const forgotPassword = async (
+  email: string
+): Promise<IApiResponse<IForgotPasswordResponse>> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    return await handleResponse<IForgotPasswordResponse>(response);
+  } catch (error) {
+    let errorMessage = "Не удалось подключиться к серверу";
+
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      errorMessage = `Не удалось подключиться к серверу API (${API_BASE_URL}). Убедитесь, что сервер запущен и доступен.`;
+    } else if (error instanceof Error) {
+      errorMessage = `Ошибка сети: ${error.message}`;
+    }
+
+    return {
+      status: 0,
+      error: {
+        error: "Network error",
+        message: errorMessage,
+      },
+    };
+  }
+};

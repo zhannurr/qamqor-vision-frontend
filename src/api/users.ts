@@ -78,7 +78,7 @@ interface DeleteUserResponse {
 export const listUsers = async (): Promise<IApiResponse<ListUsersResponse>> => {
   try {
     const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/v1/users`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/manager/list`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -190,6 +190,91 @@ export const blockUser = async (
     });
 
     return await handleResponse<UpdateUserResponse>(response);
+  } catch (error) {
+    return {
+      status: 0,
+      error: {
+        error: 'Network error',
+        message: 'Не удалось подключиться к серверу',
+      },
+    };
+  }
+};
+
+interface GetUserDetailsResponse {
+  user: User;
+  login_history?: Array<{
+    id: string;
+    user_id: string;
+    login_time: string;
+    ip_address: string;
+    location?: string;
+    status: string;
+  }>;
+}
+
+/** Backend login history item from GET /api/v1/users/{id}/login-history */
+export interface LoginHistoryEntry {
+  id: string;
+  user_id: string;
+  ip_address: string;
+  user_agent: string;
+  login_status: 'success' | 'failed';
+  failure_reason?: string;
+  created_at: string;
+}
+
+interface GetUserLoginHistoryResponse {
+  login_history: LoginHistoryEntry[];
+  limit: number;
+  offset: number;
+}
+
+export const getUserLoginHistory = async (
+  userId: string,
+  limit: number = 10,
+  offset: number = 0
+): Promise<IApiResponse<GetUserLoginHistoryResponse>> => {
+  try {
+    const token = await getAuthToken();
+    const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    const response = await fetch(
+      `${API_BASE_URL}/api/v1/users/${userId}/login-history?${params}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
+
+    return await handleResponse<GetUserLoginHistoryResponse>(response);
+  } catch (error) {
+    return {
+      status: 0,
+      error: {
+        error: 'Network error',
+        message: 'Не удалось подключиться к серверу',
+      },
+    };
+  }
+};
+
+export const getUserDetails = async (
+  userId: string
+): Promise<IApiResponse<GetUserDetailsResponse>> => {
+  try {
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+
+    return await handleResponse<GetUserDetailsResponse>(response);
   } catch (error) {
     return {
       status: 0,

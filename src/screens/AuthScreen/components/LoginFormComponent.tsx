@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, TextInput, Button, HelperText } from 'react-native-paper';
 import { useLoginForm } from '../hooks/useLoginForm';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
+import CustomSnackbar from '../../../components/CustomSnackbar';
 
 interface LoginFormProps {
   onNavigateToRegister?: () => void;
@@ -17,6 +19,17 @@ export const LoginFormComponent: React.FC<LoginFormProps> = ({ onNavigateToRegis
     handleSubmit,
     togglePasswordVisibility,
   } = useLoginForm();
+
+  const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'info'>('info');
+
+  const showSnackbar = (message: string, type: 'success' | 'error' | 'info') => {
+    setSnackbarMessage(message);
+    setSnackbarType(type);
+    setSnackbarVisible(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -76,7 +89,13 @@ export const LoginFormComponent: React.FC<LoginFormProps> = ({ onNavigateToRegis
       </Button>
 
       <View style={styles.footerLinks}>
-        <Button mode="text" compact labelStyle={styles.linkText}>
+        <Button 
+          mode="text" 
+          compact 
+          labelStyle={styles.linkText}
+          onPress={() => setForgotPasswordVisible(true)}
+          disabled={isSubmitting}
+        >
           Забыли пароль?
         </Button>
         <View style={styles.signupRow}>
@@ -86,6 +105,20 @@ export const LoginFormComponent: React.FC<LoginFormProps> = ({ onNavigateToRegis
           </TouchableOpacity>
         </View>
       </View>
+
+      <ForgotPasswordModal
+        visible={forgotPasswordVisible}
+        onClose={() => setForgotPasswordVisible(false)}
+        onSuccess={(message) => showSnackbar(message, 'success')}
+        onError={(message) => showSnackbar(message, 'error')}
+      />
+
+      <CustomSnackbar
+        visible={snackbarVisible}
+        message={snackbarMessage}
+        type={snackbarType}
+        onDismiss={() => setSnackbarVisible(false)}
+      />
     </View>
   );
 };

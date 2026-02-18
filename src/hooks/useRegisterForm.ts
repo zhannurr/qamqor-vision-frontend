@@ -185,9 +185,10 @@ export const useRegisterForm = () => {
       }
 
       if (response.data) {
+        const successMessage = 'Регистрация прошла успешно! Пожалуйста, проверьте почту для верификации аккаунта.';
         setSnackbar({
           visible: true,
-          message: response.data.message || 'Регистрация успешна! Проверьте email для подтверждения.',
+          message: successMessage,
           type: 'success',
         });
 

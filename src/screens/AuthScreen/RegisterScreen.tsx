@@ -47,7 +47,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onNavigateToLogin }) =>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <CustomSnackbar
+      < CustomSnackbar
         visible={snackbar.visible}
         message={snackbar.message}
         type={snackbar.type}
