@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, Surface, Chip, Menu } from 'react-native-paper';
+import { Text, Surface, Chip } from 'react-native-paper';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { ContextMenu } from '../../../components/UI/ContextMenu';
 import { Institution, ActiveModules } from '../types/institution.types';
 
 interface InstitutionCardProps {
@@ -17,20 +18,10 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
-
-  const handleEdit = () => {
-    closeMenu();
-    onEdit();
-  };
-
-  const handleDelete = () => {
-    closeMenu();
-    onDelete();
-  };
+  const menuItems = [
+    { title: 'Редактировать', leadingIcon: 'pencil-outline' as const, onPress: onEdit },
+    { title: 'Удалить', leadingIcon: 'delete-outline' as const, onPress: onDelete, destructive: true },
+  ];
 
   // Parse active modules from JSON string
   let activeModules: ActiveModules = {
@@ -66,26 +57,14 @@ export const InstitutionCard: React.FC<InstitutionCardProps> = ({
         >
           {institution.is_active ? 'Активно' : 'Неактивно'}
         </Chip>
-        <Menu
-          visible={menuVisible}
-          onDismiss={closeMenu}
+        <ContextMenu
+          items={menuItems}
           anchor={
-            <TouchableOpacity onPress={openMenu} style={styles.menuButton}>
+            <View style={styles.menuButton}>
               <Icon name="dots-vertical" size={24} color="#717182" />
-            </TouchableOpacity>
+            </View>
           }
-        >
-          <Menu.Item
-            onPress={handleEdit}
-            title="Редактировать"
-            leadingIcon="pencil-outline"
-          />
-          <Menu.Item
-            onPress={handleDelete}
-            title="Удалить"
-            leadingIcon="delete-outline"
-          />
-        </Menu>
+        />
       </View>
 
       <Text style={styles.title}>{institution.name}</Text>
